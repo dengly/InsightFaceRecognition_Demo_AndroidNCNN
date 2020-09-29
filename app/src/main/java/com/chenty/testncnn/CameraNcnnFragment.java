@@ -215,7 +215,7 @@ public class CameraNcnnFragment extends Fragment
     // handler对象，用来接收消息
     private Handler imgupdatehandle = new Handler() {
         @Override
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             // 处理从子线程发送过来的消息
             captureface.setImageBitmap(capturefaceimg);
             resulttextview.setText(getString(R.string.equal) + ": " + ((float)Math.round(facesimilar *10000))/100 + "%");
@@ -252,10 +252,10 @@ public class CameraNcnnFragment extends Fragment
             mSurfaceView.Draw(mBitmap, mDetect_result, 90);
 
             //split process function to prevent img reflash stop
-            if(!mDetect_isbusy)
-            {
+            if(!mDetect_isbusy) {
                 mDetect_isbusy = true;
                 new Thread(() -> {
+                    // 人脸检测
                     float[] result = ncnnprocess_imgyuv(yuv, width, height);
                     if(result != null) {
                         mDetect_result = Arrays.copyOfRange(result, 128, result.length);
@@ -264,6 +264,7 @@ public class CameraNcnnFragment extends Fragment
 
                         int x,y,xe,ye;
                         double expand = 0.05f;
+                        // 获取第一个人脸
                         float[] firstface = Arrays.copyOfRange(result, 128, 128+20);;
 
                         firstface[0] -= expand;
@@ -271,12 +272,13 @@ public class CameraNcnnFragment extends Fragment
                         firstface[2] += expand;
                         firstface[3] += expand;
 
-                        for(int i = 0 ; i < 4 ; i++)
-                        {
-                            if(firstface[i] > 1)
+                        for(int i = 0 ; i < 4 ; i++) {
+                            if(firstface[i] > 1) {
                                 firstface[i] = 1;
-                            if(firstface[i] < 0)
+                            }
+                            if(firstface[i] < 0) {
                                 firstface[i] = 0;
+                            }
                         }
 
                         x = (int)(firstface[0] * mBitmap.getWidth());
@@ -287,9 +289,11 @@ public class CameraNcnnFragment extends Fragment
                         capturefaceimg = Bitmap.createBitmap(mBitmap, x, y, xe-x, ye-y);
                         capturefaceimg_feature =  Arrays.copyOfRange(result, 0, 128);;
 
-                        if(targetfaceimg_feature != null)
-                        {
+                        if(targetfaceimg_feature != null) {
+                            // 特征比对
+                            long time = System.currentTimeMillis();
                             facesimilar = compareface(targetfaceimg_feature, capturefaceimg_feature);
+                            Log.d("FACE","compareface time:"+(System.currentTimeMillis() - time)+" ms");
                         }
                         notifyimgupdate();
                     }
@@ -373,7 +377,7 @@ public class CameraNcnnFragment extends Fragment
             if (option.getWidth() <= maxWidth && option.getHeight() <= maxHeight &&
                     option.getHeight() == option.getWidth() * h / w) {
                 if (option.getWidth() >= textureViewWidth &&
-                    option.getHeight() >= textureViewHeight) {
+                        option.getHeight() >= textureViewHeight) {
                     bigEnough.add(option);
                 } else {
                     notBigEnough.add(option);
@@ -967,12 +971,23 @@ public class CameraNcnnFragment extends Fragment
     }
 
 
-    private float[] ncnnprocess_imgyuv(byte[] data, int width, int height)
-    {
-        return detectface(data, width, height);
+    /**
+     * 人脸检测
+     * @param data
+     * @param width
+     * @param height
+     * @return
+     */
+    private float[] ncnnprocess_imgyuv(byte[] data, int width, int height) {
+        long time = System.currentTimeMillis();
+        // 人脸检测
+        float[] rev = detectface(data, width, height);
+        Log.d("FACE","detectface time:"+(System.currentTimeMillis() - time)+" ms");
+        return rev;
     }
-
+    // 人脸检测
     public native float[] detectface(byte[] data, int width, int height);
+    // 特征比对
     public native float compareface(float[] face0, float[] face1);
 
 }

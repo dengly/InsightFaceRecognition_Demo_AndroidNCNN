@@ -10,6 +10,7 @@ package com.chenty.testncnn;
  */
 
 import android.content.pm.ActivityInfo;
+import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
