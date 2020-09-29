@@ -110,15 +110,13 @@ public class CameraNcnnFragment extends Fragment
 
     private final SurfaceView.OnAttachStateChangeListener mSurfaveViewListener =
             new SurfaceView.OnAttachStateChangeListener() {
-                public void onViewAttachedToWindow(View v)
-                {
+                public void onViewAttachedToWindow(View v) {
                     Log.i(TAG, "onViewAttachedToWindow " + MAX_PREVIEW_WIDTH + "X" + MAX_PREVIEW_HEIGHT);
                     getActivity().getWindowManager().getDefaultDisplay().getSize(displaySize);
                     openCamera(displaySize.x, displaySize.y);
                 }
 
-                public void onViewDetachedFromWindow(View v)
-                {
+                public void onViewDetachedFromWindow(View v) {
 
                 }
             };
@@ -570,10 +568,8 @@ public class CameraNcnnFragment extends Fragment
 
 
                 //fix size 1280XN
-                for(Size item : outlist)
-                {
-                    if(item.getWidth() == 1280)
-                    {
+                for(Size item : outlist) {
+                    if(item.getWidth() == MAX_PREVIEW_WIDTH) {
                         Log.i(TAG, "get  target resv is " +item.getWidth() + "X" + item.getHeight());
                         mPreviewSize = item;
                     }
