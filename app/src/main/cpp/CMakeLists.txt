@@ -18,7 +18,13 @@ endif()
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
+include_directories(./ncnn-android-lib/include/glslang/Include)
+include_directories(./ncnn-android-lib/include/glslang/MachineIndependent)
+include_directories(./ncnn-android-lib/include/glslang/MachineIndependent/preprocessor)
+include_directories(./ncnn-android-lib/include/glslang/Public)
+include_directories(./ncnn-android-lib/include/glslang/SPIRV)
 include_directories(./ncnn-android-lib/include/ncnn)
+include_directories(./ncnn-android-lib/include/SPIRV)
 
 
 file(GLOB arcface_files "./arcface/*.cpp")
@@ -62,8 +68,14 @@ target_link_libraries( # Specifies the target library.
         native-lib
         android
         ${CMAKE_SOURCE_DIR}/ncnn-android-lib/${ANDROID_ABI}/libncnn.a
+        ${CMAKE_SOURCE_DIR}/ncnn-android-lib/${ANDROID_ABI}/libglslang.a
+        ${CMAKE_SOURCE_DIR}/ncnn-android-lib/${ANDROID_ABI}/libOGLCompiler.a
+        ${CMAKE_SOURCE_DIR}/ncnn-android-lib/${ANDROID_ABI}/libOSDependent.a
+        ${CMAKE_SOURCE_DIR}/ncnn-android-lib/${ANDROID_ABI}/libSPIRV.a
 
         -static-openmp -fopenmp
+        jnigraphics
+        vulkan
 
         # Links the target library to the log library
         # included in the NDK.

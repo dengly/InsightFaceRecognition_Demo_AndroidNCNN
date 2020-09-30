@@ -4,6 +4,7 @@
 
 Arcface::Arcface()
 {
+    this->net.opt.use_vulkan_compute = 1;
     this->net.load_param(mobilefacenet_param_bin);
     this->net.load_model(mobilefacenet_bin);
 }
@@ -20,6 +21,7 @@ vector<float> Arcface::getFeature(ncnn::Mat img)
     in = bgr2rgb(in);
     ncnn::Extractor ex = net.create_extractor();
     ex.set_light_mode(true);
+    ex.set_vulkan_compute(true);
     ex.set_num_threads(8);
     ex.input(mobilefacenet_param_id::BLOB_data, in);
     ncnn::Mat out;

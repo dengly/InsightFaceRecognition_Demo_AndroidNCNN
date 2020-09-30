@@ -11,6 +11,11 @@
 
 MtcnnDetector::MtcnnDetector()
 {
+    this->Pnet.opt.use_vulkan_compute = 1;
+    this->Rnet.opt.use_vulkan_compute = 1;
+    this->Onet.opt.use_vulkan_compute = 1;
+    this->Lnet.opt.use_vulkan_compute = 1;
+
     this->Pnet.load_param(det1_param_bin);
     this->Pnet.load_model(det1_bin);
     this->Rnet.load_param(det2_param_bin);
@@ -75,6 +80,7 @@ vector<FaceInfo> MtcnnDetector::Pnet_Detect(ncnn::Mat img)
         in.substract_mean_normalize(this->mean_vals, this->norm_vals);
         ncnn::Extractor ex = Pnet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_vulkan_compute(true);
         ex.set_num_threads(8);
         ex.input(det1_param_id::BLOB_data, in);
         ncnn::Mat score;
@@ -103,6 +109,7 @@ vector<FaceInfo> MtcnnDetector::Rnet_Detect(ncnn::Mat img, vector<FaceInfo> bbox
         in.substract_mean_normalize(this->mean_vals, this->norm_vals);
         ncnn::Extractor ex = Rnet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_vulkan_compute(true);
         ex.set_num_threads(8);
         ex.input(det2_param_id::BLOB_data, in);
         ncnn::Mat score, bbox;
@@ -136,6 +143,7 @@ vector<FaceInfo> MtcnnDetector::Onet_Detect(ncnn::Mat img, vector<FaceInfo> bbox
         in.substract_mean_normalize(this->mean_vals, this->norm_vals);
         ncnn::Extractor ex = Onet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_vulkan_compute(true);
         ex.set_num_threads(8);
         ex.input(det3_param_id::BLOB_data, in);
         ncnn::Mat score, bbox, point;
@@ -190,6 +198,7 @@ void MtcnnDetector::Lnet_Detect(ncnn::Mat img, vector<FaceInfo> &bboxes)
 
         ncnn::Extractor ex = Lnet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_vulkan_compute(true);
         ex.set_num_threads(8);
         ex.input(det4_param_id::BLOB_data, in);
         ncnn::Mat out1, out2, out3, out4, out5;
