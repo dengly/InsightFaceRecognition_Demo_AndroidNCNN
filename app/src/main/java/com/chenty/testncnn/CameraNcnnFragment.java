@@ -105,8 +105,8 @@ public class CameraNcnnFragment extends Fragment
     private static final String TAG = "CameraNcnnFragment";
 
     private Point displaySize = new Point();
-    private static final int MAX_PREVIEW_WIDTH = 1280;
-    private static final int MAX_PREVIEW_HEIGHT = 720;
+    private static final int MAX_PREVIEW_WIDTH = 640;
+    private static final int MAX_PREVIEW_HEIGHT = 480;
 
     private final SurfaceView.OnAttachStateChangeListener mSurfaveViewListener =
             new SurfaceView.OnAttachStateChangeListener() {
@@ -291,7 +291,7 @@ public class CameraNcnnFragment extends Fragment
                             // 特征比对
                             long time = System.currentTimeMillis();
                             facesimilar = compareface(targetfaceimg_feature, capturefaceimg_feature);
-                            Log.d("FACE","compareface time:"+(System.currentTimeMillis() - time)+" ms");
+                            Log.w("FACE","compareface time:"+(System.currentTimeMillis() - time)+" ms");
                         }
                         notifyimgupdate();
                     }
@@ -978,7 +978,7 @@ public class CameraNcnnFragment extends Fragment
         long time = System.currentTimeMillis();
         // 人脸检测
         float[] rev = detectface(data, width, height);
-        Log.d("FACE","detectface time:"+(System.currentTimeMillis() - time)+" ms");
+        Log.w("FACE","detectface time:"+(System.currentTimeMillis() - time)+" ms");
         return rev;
     }
     // 人脸检测

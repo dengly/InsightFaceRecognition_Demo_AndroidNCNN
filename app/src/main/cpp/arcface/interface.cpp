@@ -23,7 +23,7 @@ vector<FaceInfo> face_detect(ncnn::Mat ncnn_img)
     vector<FaceInfo> results = g_mtcnnDetector.Detect(ncnn_img);
     et = clock();
     costtime = et - st;
-    LOGD("detect face cost %fs\n", costtime / CLOCKS_PER_SEC);
+    LOGD("detect face cost %f ms\n", costtime / 1000);
 
     return results;
 }
@@ -36,12 +36,12 @@ vector<float> face_exactfeature(ncnn::Mat img, FaceInfo info)
     ncnn::Mat det = preprocess(img, info);
     et = clock();
     costtime = et - st;
-    LOGD("face_exactfeature preprocess cost %fs\n", costtime / CLOCKS_PER_SEC);
+    LOGD("face_exactfeature preprocess cost %f ms\n", costtime / 1000);
     st = clock();
     vector<float>feature = g_arcFace.getFeature(det);
     et = clock();
     costtime = et - st;
-    LOGD("face_exactfeature getFeature cost %fs\n", costtime / CLOCKS_PER_SEC);
+    LOGD("face_exactfeature getFeature cost %f ms\n", costtime / 1000);
 
     return feature;
 }
@@ -56,7 +56,7 @@ float face_calcSimilar(std::vector<float> feature1, std::vector<float> feature2)
     similar = calcSimilar(feature1, feature2);
     et = clock();
     costtime = et - st;
-    LOGD("calcSimilar cost %fs result %f\n", costtime / CLOCKS_PER_SEC, similar);
+    LOGD("calcSimilar cost %f ms result %f\n", costtime / 1000, similar);
     return (float)similar;
 }
 
