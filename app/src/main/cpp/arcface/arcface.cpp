@@ -22,7 +22,7 @@ vector<float> Arcface::getFeature(ncnn::Mat img)
     ncnn::Extractor ex = net.create_extractor();
     ex.set_light_mode(true);
     ex.set_vulkan_compute(true);
-    ex.set_num_threads(8);
+    ex.set_num_threads(2);
     ex.input(mobilefacenet_param_id::BLOB_data, in);
     ncnn::Mat out;
     ex.extract(mobilefacenet_param_id::BLOB_fc1, out);
