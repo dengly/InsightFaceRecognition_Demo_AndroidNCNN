@@ -9,8 +9,10 @@ package com.chenty.testncnn;
  * @Date           2019.08.16
  */
 
+import android.Manifest;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,20 +30,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+//        if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
         Log.i(TAG,"onCreate");
+    }
 
-        if (null == savedInstanceState) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, CameraNcnnFragment.newInstance())
-                    .commit();
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        RunTimePermissionUtils.onCamera(MainActivity.this, new PermissionCallback(){
+            @Override
+            public void onPermissionSuccess() {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, CameraNcnnFragment.newInstance())
+                        .commit();
+            }
+
+            @Override
+            public void onPermissionFailure() {
+                checkPermission();
+            }
+        });
+
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if(RunTimePermissionUtils.checkPermissionGranted(MainActivity.this, new String[]{Manifest.permission.CAMERA})){
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, CameraNcnnFragment.newInstance())
+                        .commit();
+            }else{
+                RunTimePermissionUtils.requestPermission(this, "权限请求", RunTimePermissionUtils.PERMISSION_REQUEST_CODE, new String[]{Manifest.permission.CAMERA} );
+            }
         }
-
     }
 }
